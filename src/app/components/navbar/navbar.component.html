@@ -1,0 +1,31 @@
+@if (showNavbar) {
+<div class="header">
+    <div>
+        <div>
+            Bart Robat.
+        </div>
+        <div class="button" [routerLink]="''">
+            Projects
+        </div>
+
+        <div class="button" [routerLink]="'about'">
+            About
+        </div>
+
+        <div class="button" [routerLink]="'blog'">
+            Blog
+        </div>
+    </div>
+    <div>
+        <div class="button" (click)="toggleNavbar()">
+            X
+        </div>
+    </div>
+</div>
+} @else {
+<div class="small-header">
+    <div (click)="toggleNavbar()">
+        X
+    </div>
+</div>
+}
