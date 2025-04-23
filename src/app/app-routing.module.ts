@@ -7,11 +7,12 @@ import { AboutComponent } from './pages/about/about.component';
 import { BlogComponent } from './pages/blog/blog.component';
 
 const routes: Routes = [
-  { path:'', component : FrontPageComponent },
-  { path:'sols', component: SolsComponent},
-  { path:'galaxy-sim', component: GalaxySimComponent},
-  { path: 'about', component: AboutComponent},
-  { path: 'blog', component: BlogComponent}
+  { path: '', redirectTo:'projects', pathMatch: 'full'},
+  { path: 'projects', component: FrontPageComponent },
+  { path: 'sols', component: SolsComponent },
+  { path: 'galaxy-sim', component: GalaxySimComponent },
+  { path: 'about', component: AboutComponent },
+  { path: 'blog', component: BlogComponent }
 
 ];
 
@@ -19,6 +20,6 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { 
+export class AppRoutingModule {
 
 }
