@@ -42,8 +42,11 @@ iframe {
             border-radius: 16px;
         }
 
-        .button:hover,
-        .button:active {
+        .button-activated {
+            @include hovered;
+        }
+
+        .button:hover {
             @include hovered;
         }
     }
@@ -58,9 +61,7 @@ iframe {
         border-radius: 16px;
     }
 
-    .button:hover,
-    .button:active,
-    .button:focus {
+    .button:hover {
         @include hovered;
     }
 }
@@ -95,6 +96,9 @@ iframe {
     margin: auto;
     gap: 20px; // Gap between blocks
     max-width: $image-container-width;
+    p {
+        text-align: justify;
+    }
 }
 
 
