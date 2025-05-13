@@ -5,12 +5,14 @@ import { SolsComponent } from './pages/sols/sols.component';
 import { GalaxySimComponent } from './pages/galaxy-sim/galaxy-sim.component';
 import { AboutComponent } from './pages/about/about.component';
 import { BlogComponent } from './pages/blog/blog.component';
+import { OrbitTraderComponent } from './pages/orbit-trader/orbit-trader.component';
 
 const routes: Routes = [
   { path: '', redirectTo:'projects', pathMatch: 'full'},
   { path: 'projects', component: FrontPageComponent },
   { path: 'sols', component: SolsComponent },
   { path: 'galaxy-sim', component: GalaxySimComponent },
+  { path: 'orbit-trader', component: OrbitTraderComponent },
   { path: 'about', component: AboutComponent },
   { path: 'blog', component: BlogComponent }
 
