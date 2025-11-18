@@ -1,12 +1,21 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { SeoService } from '../../services/seo.service';
 
 @Component({
   selector: 'app-blog',
-  standalone: true,
-  imports: [],
   templateUrl: './blog.component.html',
-  styleUrl: './blog.component.scss'
+  styleUrls: ['./blog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BlogComponent {
+export class BlogComponent implements OnInit {
+  constructor(private seoService: SeoService) {}
 
+  ngOnInit(): void {
+    this.seoService.updateMetaTags({
+      title: 'Blog - Bart Robat',
+      description: 'Thoughts and articles about web development, simulations, and technology.',
+      keywords: 'blog, web development, programming, Angular, WebGL',
+      url: 'https://bartrobat.com/blog',
+    });
+  }
 }

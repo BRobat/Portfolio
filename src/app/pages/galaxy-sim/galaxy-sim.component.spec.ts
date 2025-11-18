@@ -8,9 +8,8 @@ describe('GalaxySimComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ GalaxySimComponent ]
-    })
-    .compileComponents();
+      declarations: [GalaxySimComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(GalaxySimComponent);
     component = fixture.componentInstance;

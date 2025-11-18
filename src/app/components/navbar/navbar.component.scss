@@ -1,0 +1,74 @@
+@import '../../styles/variables';
+
+.header {
+  height: 32px;
+  box-shadow: 10px;
+  width: 100%;
+  max-width: 100vw;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  padding: 16px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  overflow-x: hidden;
+
+  div {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+
+    .button {
+      padding: 8px;
+      border-radius: 16px;
+      white-space: nowrap;
+    }
+
+    .button-activated {
+      @include hovered;
+    }
+
+    .button:hover {
+      @include hovered;
+    }
+  }
+
+  // Mobile styles
+  @media (max-width: $mobile-breakpoint) {
+    flex-direction: column;
+    height: auto;
+    gap: 8px;
+    padding: 12px;
+
+    div {
+      width: 100%;
+      justify-content: space-between;
+      gap: 8px;
+    }
+  }
+}
+
+.small-header {
+  height: 32px;
+  width: 32px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  padding: 16px;
+
+  button {
+    padding: 8px;
+    border-radius: 16px;
+    border: none;
+    cursor: pointer;
+    background: transparent;
+  }
+
+  button:hover {
+    @include hovered;
+  }
+}

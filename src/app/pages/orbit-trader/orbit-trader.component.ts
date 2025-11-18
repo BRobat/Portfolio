@@ -1,12 +1,24 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { SeoService } from '../../services/seo.service';
 
 @Component({
   selector: 'app-orbit-trader',
-  standalone: true,
-  imports: [],
   templateUrl: './orbit-trader.component.html',
-  styleUrl: './orbit-trader.component.scss'
+  styleUrls: ['./orbit-trader.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class OrbitTraderComponent {
+export class OrbitTraderComponent implements OnInit {
   windowHeight = window.innerHeight;
+
+  constructor(private seoService: SeoService) {}
+
+  ngOnInit(): void {
+    this.seoService.updateMetaTags({
+      title: 'Orbit Trader Demo - Orbital Mechanics Game',
+      description:
+        'Demo of an upcoming game with orbital movement as the main mechanic. Experience realistic space physics.',
+      keywords: 'game, orbital mechanics, space game, simulation, demo',
+      url: 'https://bartrobat.com/orbit-trader',
+    });
+  }
 }

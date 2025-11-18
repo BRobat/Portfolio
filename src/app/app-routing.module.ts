@@ -6,22 +6,21 @@ import { GalaxySimComponent } from './pages/galaxy-sim/galaxy-sim.component';
 import { AboutComponent } from './pages/about/about.component';
 import { BlogComponent } from './pages/blog/blog.component';
 import { OrbitTraderComponent } from './pages/orbit-trader/orbit-trader.component';
+import { NotFoundComponent } from './pages/not-found/not-found.component';
 
 const routes: Routes = [
-  { path: '', redirectTo:'projects', pathMatch: 'full'},
+  { path: '', redirectTo: 'projects', pathMatch: 'full' },
   { path: 'projects', component: FrontPageComponent },
   { path: 'sols', component: SolsComponent },
   { path: 'galaxy-sim', component: GalaxySimComponent },
   { path: 'orbit-trader', component: OrbitTraderComponent },
   { path: 'about', component: AboutComponent },
-  { path: 'blog', component: BlogComponent }
-
+  { path: 'blog', component: BlogComponent },
+  { path: '**', component: NotFoundComponent },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule {
-
-}
+export class AppRoutingModule {}

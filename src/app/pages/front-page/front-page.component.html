@@ -1,67 +1,42 @@
 <div class="content">
+  <div class="title">
+    <h2>Web projects library</h2>
+    <p>
+      Here are some things I've published on the web so far. More manual things like music or 3d printing are on my
+      instagram:
+      <a
+        href="https://www.instagram.com/bart_robat/"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Visit Bart Robat's Instagram profile"
+        >here</a
+      >.
+    </p>
+  </div>
 
-    <div class="title">
-        <h2>
-            Web projects library
-        </h2>
-        <p>
-            Here are some things I've published on the web so far. More manual things like music or 3d printing are on my instagram: <a
-                href="https://www.instagram.com/bart_robat/" target="_blank">here</a>.
-        </p>
-        <!-- <p>
-            Besides that, projects I've made for clients are available on the about page. (they're mostly internal applications)
-        </p> -->
-        <!-- <span>
-            Here is a library of software stuff I made. The rest is on my instagram <a href="https://www.instagram.com/bart_robat/" target="_blank">here</a>
-        </span> -->
-    </div>
-
-    <div class="blocks">
-         <div class="image-container">
-            <div class="tile" [routerLink]="'/orbit-trader'">
-                <div>
-                    <h5>
-                        Orbit Trader demo
-                    </h5>
-                    <p>
-                        A demo of (hopefully) upcoming game with orbital movement as main mechanic.
-                    </p>
-                </div>
-                <img src="./assets/images/orbit-trader.png" alt="img">
-            </div>
-        </div>
-        <div class="image-container">
-            <div class="tile" [routerLink]="'/sols'">
-                <div>
-                    <h5>
-                        SOLS
-                    </h5>
-                    <p>
-                        A Simple Organism Life Simulator on a planet. Enjoy looking at the little creatures spreading
-                        and fighting over resources.
-                    </p>
-                </div>
-                <img src="./assets/images/sols.png" alt="img">
-            </div>
-        </div>
-
-        <div class="image-container">
-            <div class="tile" [routerLink]="'/galaxy-sim'">
-                <div>
-                    <h5>
-                        Galaxy sim
-                    </h5>
-                    <p>
-                        Even simpler galaxy simulation written in threejs and making use of GPGPU.
-                    </p>
-                </div>
-                <img src="./assets/images/galaxy-sim.png" alt="img">
-            </div>
-        </div>
-    </div>
+  <div class="blocks">
+    @for (project of projects$ | async; track project.id) {
+      <div class="image-container">
+        <article
+          class="tile"
+          [routerLink]="project.route"
+          role="button"
+          tabindex="0"
+          [attr.aria-label]="'Navigate to ' + project.title + ' project'"
+        >
+          <div>
+            <h5>
+              {{ project.title }}
+            </h5>
+            <p>
+              {{ project.description }}
+            </p>
+          </div>
+          <img [src]="project.imagePath" [alt]="project.imageAlt" loading="lazy" />
+        </article>
+      </div>
+    }
+  </div>
 </div>
 
-
-<div class="footer">
-
-</div>
+<footer class="footer" role="contentinfo"></footer>

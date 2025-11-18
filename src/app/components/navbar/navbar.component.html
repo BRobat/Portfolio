@@ -1,31 +1,25 @@
 @if (showNavbar) {
-<div class="header">
+  <nav class="header" role="navigation" aria-label="Main navigation">
     <div>
-        <div>
-            Bart Robat.
-        </div>
-        <div class="button" [routerLink]="'projects'" routerLinkActive="button-activated">
-            Projects
-        </div>
+      <div>Bart Robat.</div>
+      <a class="button" [routerLink]="'projects'" routerLinkActive="button-activated" role="button" tabindex="0">
+        Projects
+      </a>
 
-        <div class="button" [routerLink]="'about'" routerLinkActive="button-activated">
-            About
-        </div>
+      <a class="button" [routerLink]="'about'" routerLinkActive="button-activated" role="button" tabindex="0">
+        About
+      </a>
 
-        <div class="button" [routerLink]="'blog'" routerLinkActive="button-activated">
-            Blog
-        </div>
+      <a class="button" [routerLink]="'blog'" routerLinkActive="button-activated" role="button" tabindex="0"> Blog </a>
     </div>
     <div>
-        <div class="button" (click)="toggleNavbar()">
-            X
-        </div>
+      <button class="button" (click)="toggleNavbar()" aria-label="Toggle navigation menu" aria-expanded="true">
+        ☰
+      </button>
     </div>
-</div>
+  </nav>
 } @else {
-<div class="small-header">
-    <div (click)="toggleNavbar()">
-        X
-    </div>
-</div>
+  <div class="small-header">
+    <button (click)="toggleNavbar()" aria-label="Open navigation menu" aria-expanded="false">☰</button>
+  </div>
 }

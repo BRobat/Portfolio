@@ -8,10 +8,9 @@ describe('OrbitTraderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [OrbitTraderComponent]
-    })
-    .compileComponents();
-    
+      imports: [OrbitTraderComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(OrbitTraderComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
