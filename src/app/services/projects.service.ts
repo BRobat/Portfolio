@@ -8,9 +8,17 @@ import { Project } from '../models/project.model';
 export class ProjectsService {
   private projects: Project[] = [
     {
+      id: 'mushroom-picking',
+      title: 'Mushroom Picking demo',
+      description: 'An early version of a very graphically unintensive game about picking mushrooms.',
+      imagePath: '/assets/images/mushroom-picking.png',
+      imageAlt: 'A pig',
+      route: '/mushroom-picking',
+    },
+    {
       id: 'orbit-trader',
       title: 'Orbit Trader demo',
-      description: 'A demo of (hopefully) upcoming game with orbital movement as main mechanic.',
+      description: 'A demo of a game with orbital movement as main mechanic. Currently on hold.',
       imagePath: '/assets/images/orbit-trader.png',
       imageAlt: 'Orbit Trader game screenshot showing orbital mechanics',
       route: '/orbit-trader',

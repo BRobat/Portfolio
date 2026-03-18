@@ -7,10 +7,12 @@ import { AboutComponent } from './pages/about/about.component';
 import { BlogComponent } from './pages/blog/blog.component';
 import { OrbitTraderComponent } from './pages/orbit-trader/orbit-trader.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
+import { MushroomPickingComponent } from './pages/mushroom-picking/mushroom-picking.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'projects', pathMatch: 'full' },
   { path: 'projects', component: FrontPageComponent },
+  { path: 'mushroom-picking', component: MushroomPickingComponent },
   { path: 'sols', component: SolsComponent },
   { path: 'galaxy-sim', component: GalaxySimComponent },
   { path: 'orbit-trader', component: OrbitTraderComponent },
