@@ -10,7 +10,8 @@ import { ProjectPlayerComponent } from './pages/projects/project-player/project-
 import { newsResolver, playableProjectResolver, projectResolver } from './content/content.resolvers';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'projects', pathMatch: 'full' },
+  // Served directly (no redirect); the page's canonical URL is /projects.
+  { path: '', component: ProjectListComponent, pathMatch: 'full' },
 
   { path: 'projects', component: ProjectListComponent },
   { path: 'projects/:slug', component: ProjectDetailComponent, resolve: { entry: projectResolver } },
@@ -31,6 +32,8 @@ export const routes: Routes = [
   // Old URLs (also 301-redirected in firebase.json).
   { path: 'sols', redirectTo: 'projects/sols' },
   { path: 'galaxy-sim', redirectTo: 'projects/galaxy-sim' },
+  { path: 'mushroom-picking', redirectTo: 'projects/mushroom-picking' },
+  { path: 'orbit-trader', redirectTo: 'projects/orbit-trader' },
   { path: 'blog', redirectTo: 'news' },
 
   { path: '404', component: NotFoundComponent },

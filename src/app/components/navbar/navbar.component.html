@@ -1,35 +1,12 @@
-@if (showNavbar) {
-<div class="header">
-    <div>
-        <div>
-            Bart Robat.
-        </div>
-        <a class="button" routerLink="/projects" routerLinkActive="button-activated">
-            Projects
-        </a>
-
-        <a class="button" routerLink="/news" routerLinkActive="button-activated">
-            News
-        </a>
-
-        <a class="button" routerLink="/about" routerLinkActive="button-activated">
-            About
-        </a>
-
-        <a class="button" routerLink="/contact" routerLinkActive="button-activated">
-            Contact
-        </a>
-    </div>
-    <div>
-        <div class="button" (click)="toggleNavbar()">
-            X
-        </div>
-    </div>
-</div>
-} @else {
-<div class="small-header">
-    <div (click)="toggleNavbar()">
-        X
-    </div>
-</div>
-}
+<nav class="bar glass rim" aria-label="Main">
+  @for (link of links; track link.path) {
+    <a
+      class="link"
+      [routerLink]="link.path"
+      routerLinkActive="active"
+      ariaCurrentWhenActive="page"
+      [class.active]="link.path === '/projects' && atRoot()"
+      >{{ link.label }}</a
+    >
+  }
+</nav>

@@ -4,7 +4,7 @@ import { ProjectDetailComponent } from './project-detail.component';
 import { ProjectMeta } from '../../../content/content.model';
 
 const meta: ProjectMeta = {
-  slug: 'demo', title: 'Demo', summary: 'A demo', date: null, cover: null,
+  slug: 'demo', title: 'Demo', summary: 'A demo', date: null, cover: null, coverImage: null,
   draft: false, pinned: false, order: null, iframe: 'https://example.com',
 };
 
@@ -16,7 +16,7 @@ describe('ProjectDetailComponent', () => {
     fixture.detectChanges();
 
     const el = fixture.nativeElement as HTMLElement;
-    expect(el.querySelector('h2')?.textContent).toContain('Demo');
+    expect(el.querySelector('h1')?.textContent).toContain('Demo');
     expect(el.querySelector('.markdown b')?.textContent).toBe('world');
     expect(el.querySelector('a.launch')?.getAttribute('href')).toBe('/projects/demo/play');
   });

@@ -9,3 +9,13 @@ p {
     padding: 0 32px;
     text-align: justify;
 }
+a {
+    color: var(--accent-bright);
+}
+
+.image-container span {
+    display: block;
+    margin-top: 8px;
+    color: var(--text-dim);
+    text-align: center;
+}

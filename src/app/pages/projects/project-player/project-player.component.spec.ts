@@ -7,7 +7,7 @@ describe('ProjectPlayerComponent', () => {
     TestBed.configureTestingModule({ imports: [ProjectPlayerComponent], providers: [provideRouter([])] });
     const fixture = TestBed.createComponent(ProjectPlayerComponent);
     fixture.componentRef.setInput('project', {
-      slug: 'demo', title: 'Demo', summary: '', date: null, cover: null,
+      slug: 'demo', title: 'Demo', summary: '', date: null, cover: null, coverImage: null,
       draft: false, pinned: false, order: null, iframe: 'https://example.com/',
     });
     fixture.detectChanges();

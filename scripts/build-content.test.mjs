@@ -9,7 +9,11 @@ import {
   sortProjects,
   truncate,
   toArray,
+  imageSize,
+  fittedSize,
+  toWebpPath,
 } from './build-content.mjs';
+import fs from 'node:fs';
 
 test('splitFrontmatter reads YAML and leaves body', () => {
   const { data, body } = splitFrontmatter('---\nproject: [sols]\npinned: true\n---\n# Hi\n');
@@ -78,4 +82,24 @@ test('sortProjects: pinned first, then order, then date desc', () => {
     p('pin1', { pinned: true, order: 1 }),
   ]);
   assert.deepEqual(sorted.map(x => x.slug), ['pin1', 'pin2', 'new', 'old']);
+});
+
+test('imageSize: reads PNG and JPEG headers', () => {
+  assert.deepEqual(imageSize(fs.readFileSync('content/projects/sols/cover.png')), { width: 600, height: 604 });
+  assert.deepEqual(imageSize(fs.readFileSync('src/assets/images/kiwi.jpeg')), { width: 600, height: 600 });
+  assert.equal(imageSize(Buffer.from('not an image')), null);
+});
+
+test('fittedSize / toWebpPath', () => {
+  assert.deepEqual(fittedSize({ width: 600, height: 400 }), { width: 600, height: 400 });
+  assert.deepEqual(fittedSize({ width: 2400, height: 1600 }), { width: 1200, height: 800 });
+  assert.equal(toWebpPath('/a/b/cover.PNG'), '/a/b/cover.webp');
+  assert.equal(toWebpPath('/a/x.gif'), '/a/x.gif');
+});
+
+test('renderMarkdown: resolveImage swaps src and adds dimensions', () => {
+  const r = renderMarkdown('![k](k.jpg)', '/m', href => ({ src: href.replace('.jpg', '.webp'), width: 10, height: 20 }));
+  assert.ok(r.html.includes('src="/m/k.webp"'));
+  assert.ok(r.html.includes('width="10" height="20"'));
+  assert.equal(r.firstImage, '/m/k.jpg');
 });

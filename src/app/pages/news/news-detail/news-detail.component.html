@@ -1,6 +1,6 @@
 <article class="content">
   <header class="title">
-    <h2>{{ post().title }}</h2>
+    <h1>{{ post().title }}</h1>
     <time [attr.datetime]="post().date">{{ post().date }}</time>
   </header>
 
@@ -15,6 +15,6 @@
         }
       </p>
     }
-    <p><a routerLink="/news">← all news</a></p>
+    <p class="back"><a class="pill" routerLink="/news">← all news</a></p>
   </footer>
 </article>

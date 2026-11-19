@@ -1,9 +1,8 @@
 .launch {
-  display: inline-block;
-  padding: 8px 16px;
-  border: 1px solid white;
-  border-radius: 16px;
-  text-decoration: none;
+  margin-top: 4px;
+  color: var(--accent-bright);
+  border-color: var(--accent);
+  background: rgba(0, 170, 170, .12);
 }
 
 .related, .back {
@@ -13,14 +12,17 @@
 }
 
 .related {
-  h3 {
+  padding: 14px 16px;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--glass-border);
+  background: var(--card-tint);
+
+  h2 {
     margin-bottom: 12px;
     font-weight: bold;
   }
 
-  ul {
-    list-style: none;
-  }
+  ul { list-style: none; }
 
   li {
     display: flex;
@@ -29,11 +31,9 @@
   }
 
   time {
-    color: #888;
+    color: var(--text-dim);
     flex-shrink: 0;
   }
-}
 
-a {
-  color: #0aa;
+  a { color: var(--accent-bright); }
 }

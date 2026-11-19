@@ -1,6 +1,6 @@
 <div class="content">
   <div class="title">
-    <h2>News</h2>
+    <h1>News</h1>
   </div>
 
   @if (items().length) {
@@ -24,13 +24,13 @@
   @if (pageCount > 1) {
     <nav class="pager" aria-label="News pages">
       @if (current() > 1) {
-        <a [routerLink]="pageLink(current() - 1)" rel="prev">← newer</a>
+        <a class="pill" [routerLink]="pageLink(current() - 1)" rel="prev">← newer</a>
       } @else {
         <span></span>
       }
       <span>{{ current() }} / {{ pageCount }}</span>
       @if (current() < pageCount) {
-        <a [routerLink]="pageLink(current() + 1)" rel="next">older →</a>
+        <a class="pill" [routerLink]="pageLink(current() + 1)" rel="next">older →</a>
       } @else {
         <span></span>
       }

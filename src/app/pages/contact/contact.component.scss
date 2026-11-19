@@ -1,11 +1,7 @@
 .links {
   list-style: none;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 12px;
-
-  a {
-    color: #0aa;
-  }
 }

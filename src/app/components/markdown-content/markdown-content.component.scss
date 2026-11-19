@@ -17,18 +17,21 @@
   }
 
   blockquote {
-    border-left: 2px solid #0aa;
+    border-left: 2px solid var(--accent);
     padding-left: 12px;
-    color: #bbb;
+    color: var(--text-dim);
   }
 
   code {
-    background-color: #222;
+    background-color: rgba(255, 255, 255, .07);
+    border-radius: 4px;
     padding: 0 4px;
   }
 
   pre {
-    background-color: #222;
+    background-color: rgba(0, 0, 0, .3);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-card);
     padding: 12px;
     overflow-x: auto;
 
@@ -46,6 +49,8 @@
 
   iframe {
     width: 100%;
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-card);
     height: auto;
     aspect-ratio: 16 / 9;
     padding: 0;
@@ -53,12 +58,12 @@
   }
 
   a {
-    color: #0aa;
+    color: var(--accent-bright);
   }
 
   hr {
     border: none;
-    border-top: 1px solid #555;
+    border-top: 1px solid var(--glass-border);
     margin: 24px 0;
   }
 }

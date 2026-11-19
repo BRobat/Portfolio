@@ -1,5 +1,5 @@
 time {
-  color: #888;
+  color: var(--text-dim);
 }
 
 .meta {
@@ -7,11 +7,9 @@ time {
   margin: 32px auto 0;
   padding: 0 16px;
 
-  p {
-    margin-bottom: 8px;
-  }
-}
+  p { margin-bottom: 12px; }
 
-a {
-  color: #0aa;
+  a { color: var(--accent-bright); }
+
+  .pill { color: inherit; }
 }

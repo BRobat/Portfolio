@@ -88,7 +88,7 @@ export function truncate(text, length = SUMMARY_LENGTH) {
  * summary (first text paragraph), first image, and HTML with relative media URLs
  * rewritten to `mediaBase`.
  */
-export function renderMarkdown(markdown, mediaBase) {
+export function renderMarkdown(markdown, mediaBase, resolveImage = href => ({ src: href })) {
   const marked = new Marked({ gfm: true });
   const source = convertObsidianEmbeds(markdown);
   const tokens = marked.lexer(source);
@@ -122,13 +122,60 @@ export function renderMarkdown(markdown, mediaBase) {
     renderer: {
       image({ href, title: imgTitle, text }) {
         const t = imgTitle ? ` title="${escapeAttr(imgTitle)}"` : '';
-        return `<img src="${escapeAttr(href)}" alt="${escapeAttr(text)}"${t} loading="lazy">`;
+        const { src, width, height } = resolveImage(href);
+        const size = width && height ? ` width="${width}" height="${height}"` : '';
+        return `<img src="${escapeAttr(src)}" alt="${escapeAttr(text)}"${t}${size} loading="lazy" decoding="async">`;
       },
     },
   });
   const html = marked.parser(tokens);
 
   return { title, summary, firstImage: images[0] ?? null, html };
+}
+
+/** Max width of generated .webp images. */
+export const WEBP_MAX_WIDTH = 1200;
+const WEBP_SOURCE = /\.(png|jpe?g)$/i;
+
+/** Reads intrinsic size from PNG / JPEG / GIF / WebP headers (sync, no dependencies). */
+export function imageSize(buf) {
+  if (buf.length >= 24 && buf.readUInt32BE(0) === 0x89504e47) {
+    return { width: buf.readUInt32BE(16), height: buf.readUInt32BE(20) };
+  }
+  if (buf.length >= 10 && buf.toString('ascii', 0, 3) === 'GIF') {
+    return { width: buf.readUInt16LE(6), height: buf.readUInt16LE(8) };
+  }
+  if (buf.length >= 30 && buf.toString('ascii', 0, 4) === 'RIFF' && buf.toString('ascii', 8, 12) === 'WEBP') {
+    const chunk = buf.toString('ascii', 12, 16);
+    if (chunk === 'VP8X') return { width: 1 + buf.readUIntLE(24, 3), height: 1 + buf.readUIntLE(27, 3) };
+    if (chunk === 'VP8 ') return { width: buf.readUInt16LE(26) & 0x3fff, height: buf.readUInt16LE(28) & 0x3fff };
+    if (chunk === 'VP8L') {
+      const b = buf.readUInt32LE(21);
+      return { width: (b & 0x3fff) + 1, height: ((b >> 14) & 0x3fff) + 1 };
+    }
+  }
+  if (buf.length >= 4 && buf[0] === 0xff && buf[1] === 0xd8) {
+    let i = 2;
+    while (i + 9 < buf.length) {
+      if (buf[i] !== 0xff) { i++; continue; }
+      const marker = buf[i + 1];
+      if (marker >= 0xc0 && marker <= 0xcf && ![0xc4, 0xc8, 0xcc].includes(marker)) {
+        return { width: buf.readUInt16BE(i + 7), height: buf.readUInt16BE(i + 5) };
+      }
+      i += 2 + buf.readUInt16BE(i + 2);
+    }
+  }
+  return null;
+}
+
+/** Size an image will have once converted (capped at WEBP_MAX_WIDTH, aspect kept). */
+export function fittedSize({ width, height }) {
+  if (width <= WEBP_MAX_WIDTH) return { width, height };
+  return { width: WEBP_MAX_WIDTH, height: Math.round((height * WEBP_MAX_WIDTH) / width) };
+}
+
+export function toWebpPath(file) {
+  return file.replace(WEBP_SOURCE, '.webp');
 }
 
 function escapeAttr(value) {
@@ -170,6 +217,8 @@ function walkFiles(dir) {
 
 /** Files written during the current build; anything else in the output dirs is stale. */
 let written = new Set();
+/** { src, target } pairs to convert to WebP after the (sync) build. */
+let pendingWebp = [];
 
 /** Writes only when content differs, so the dev server doesn't reload for unchanged files. */
 function writeIfChanged(file, content) {
@@ -205,7 +254,27 @@ function readEntry(dir, type, { drafts, warn }) {
   const folder = parseFolderName(path.basename(dir));
   const slug = data.slug ? slugify(data.slug) : folder.slug;
   const mediaBase = `/content/${type}/${slug}`;
-  const rendered = renderMarkdown(body, mediaBase);
+  const outDir = path.join(PUBLIC_OUT, 'content', type, slug);
+
+  // Optimised variants: url of the original -> { src (webp), width, height }.
+  const images = new Map();
+  for (const file of files) {
+    if (!WEBP_SOURCE.test(file) && !/\.(gif|webp)$/i.test(file)) continue;
+    const size = imageSize(fs.readFileSync(file));
+    if (!size) continue;
+    const rel = path.relative(dir, file).split(path.sep).join('/');
+    const url = `${mediaBase}/${rel}`;
+    if (WEBP_SOURCE.test(file)) {
+      const target = toWebpPath(path.join(outDir, rel));
+      written.add(target);
+      pendingWebp.push({ src: file, target });
+      images.set(url, { src: toWebpPath(url), ...fittedSize(size) });
+    } else {
+      images.set(url, { src: url, ...size });
+    }
+  }
+  const resolveImage = href => images.get(decodeURI(href)) ?? images.get(href) ?? { src: href };
+  const rendered = renderMarkdown(body, mediaBase, resolveImage);
 
   const date = data.date ? toIsoDate(data.date) : folder.date;
   if (type === 'news' && !date) {
@@ -223,7 +292,7 @@ function readEntry(dir, type, { drafts, warn }) {
     if (size > MAX_MEDIA_BYTES) {
       warn(`${path.relative(ROOT, file)} is ${(size / 1024 / 1024).toFixed(1)} MB — consider compressing it`);
     }
-    const target = path.join(PUBLIC_OUT, 'content', type, slug, path.relative(dir, file));
+    const target = path.join(outDir, path.relative(dir, file));
     writeIfChanged(target, fs.readFileSync(file));
   }
 
@@ -233,6 +302,7 @@ function readEntry(dir, type, { drafts, warn }) {
     summary: data.summary ? String(data.summary) : rendered.summary,
     date: date ?? null,
     cover: cover ?? null,
+    coverImage: cover && images.has(cover) ? images.get(cover) : cover ? { src: cover } : null,
     draft: !!data.draft,
   };
   if (type === 'news') {
@@ -295,6 +365,7 @@ export function build({ drafts = false } = {}) {
   const warn = msg => warnings.push(msg);
 
   written = new Set();
+  pendingWebp = [];
 
   const newsEntries = collect('news', { drafts, warn });
   const projectEntries = collect('projects', { drafts, warn });
@@ -339,13 +410,34 @@ export const PROJECT_LOADERS: Record<string, ContentLoader> = ${loaderMap('proje
   removeStale(TS_OUT);
   removeStale(PUBLIC_OUT);
 
-  return { news, projects, warnings };
+  return { news, projects, warnings, images: pendingWebp };
 }
 
-function runBuild(drafts) {
-  const { news, projects, warnings } = build({ drafts });
+/** Converts images to WebP; skips targets that are already newer than their source. */
+export async function convertImages(images) {
+  if (!images.length) return 0;
+  const { default: sharp } = await import('sharp');
+  let converted = 0;
+  for (const { src, target } of images) {
+    if (fs.existsSync(target) && fs.statSync(target).mtimeMs >= fs.statSync(src).mtimeMs) continue;
+    fs.mkdirSync(path.dirname(target), { recursive: true });
+    await sharp(src)
+      .resize({ width: WEBP_MAX_WIDTH, withoutEnlargement: true })
+      .webp({ quality: 75, effort: 5 })
+      .toFile(target);
+    converted++;
+  }
+  return converted;
+}
+
+async function runBuild(drafts) {
+  const { news, projects, warnings, images } = build({ drafts });
   for (const w of warnings) console.warn(`⚠ ${w}`);
-  console.log(`content: ${news.length} news, ${projects.length} projects${drafts ? ' (drafts included)' : ''}`);
+  const converted = await convertImages(images);
+  console.log(
+    `content: ${news.length} news, ${projects.length} projects${drafts ? ' (drafts included)' : ''}` +
+      (converted ? `, ${converted} image(s) converted to webp` : ''),
+  );
 }
 
 function watchContent(drafts) {
@@ -353,12 +445,8 @@ function watchContent(drafts) {
   const watcher = fs.watch(CONTENT_DIR, { recursive: true }, () => {
     clearTimeout(timer);
     timer = setTimeout(() => {
-      try {
-        runBuild(drafts);
-      } catch (err) {
-        // Keep watching: a half-saved file or a frontmatter typo shouldn't stop the dev server.
-        console.error(`content build failed: ${err.message}`);
-      }
+      // Keep watching: a half-saved file or a frontmatter typo shouldn't stop the dev server.
+      runBuild(drafts).catch(err => console.error(`content build failed: ${err.message}`));
     }, 200);
   });
   console.log('content: watching content/ for changes');
@@ -381,7 +469,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   const drafts = flags.includes('--drafts');
 
   try {
-    runBuild(drafts);
+    await runBuild(drafts);
   } catch (err) {
     console.error(`content build failed: ${err.message}`);
     process.exit(1);

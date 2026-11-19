@@ -7,18 +7,9 @@ project: [sols]
 
 # Hello world
 
-This first paragraph becomes the summary on the news list and in link previews, so make it count.
+Yes, I've finally made this step and have written my first post here.
 
-## A section
+## Much has been done
+I've done a lot of side projects since I've launched this site. Many of which aren't recorded still.
 
-Regular **Markdown** works: *italics*, [links](https://github.com/BRobat), lists, quotes and code.
 
-- one
-- two
-
-> A quote.
-
-![Kiwi the cat](kiwi.jpeg)
-
-Images and GIFs go next to this file. Both `![alt](photo.jpg)` and Obsidian's `![[photo.jpg]]` work.
-The first image is used as the preview image when the link is shared.

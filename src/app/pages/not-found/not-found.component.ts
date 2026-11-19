@@ -8,13 +8,12 @@ import { SeoService } from '../../core/seo.service';
   template: `
     <div class="content">
       <div class="title">
-        <h2>Nothing here.</h2>
-        <p><a routerLink="/projects">Back to projects</a></p>
+        <h1>Nothing here.</h1>
+        <p><a class="pill" routerLink="/projects">Back to projects</a></p>
       </div>
     </div>
   `,
-  styles: `a { color: #0aa; }`,
-})
+  })
 export class NotFoundComponent {
   constructor() {
     inject(SeoService).set({ title: 'Not found', path: '/404', noindex: true });

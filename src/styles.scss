@@ -1,139 +1,257 @@
-$image-container-width: 1200px; // This could be adjusted based on your layout requirements
-$mobile-breakpoint: 768px; // Typically the point at which to switch from 3 columns to 1
+$image-container-width: 1200px;
 
-@mixin hovered {
-    cursor: pointer;
-    box-shadow: 5px 5px #0aa;
+// ---------------------------------------------------------------------------
+// Tokens
+// ---------------------------------------------------------------------------
+:root {
+    color-scheme: dark;
+
+    --base: #0b0d12;
+    --text: #e8ecf2;
+    --text-dim: #8b93a3;
+    --accent: #0aa;
+    --accent-bright: #2ee6e6;
+    --accent-glow: rgba(0, 170, 170, 0.35);
+
+    // Glass
+    --glass-tint: rgba(16, 19, 28, 0.42);
+    --card-tint: rgba(255, 255, 255, 0.045);
+    --card-tint-hover: rgba(255, 255, 255, 0.08);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-highlight: rgba(255, 255, 255, 0.22);
+    --glass-filter: blur(22px) saturate(170%) brightness(0.9);
+    --glass-shadow:
+        inset 0 1px 0 var(--glass-highlight),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.3),
+        0 12px 40px rgba(0, 0, 0, 0.45);
+
+    --radius-card: 12px;
+    --radius-pill: 999px;
+
+    --mono: ui-monospace, "JetBrains Mono", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 }
 
+@media (prefers-reduced-transparency: reduce) {
+    :root {
+        --glass-tint: rgba(16, 19, 28, 0.96);
+        --glass-filter: none;
+    }
+}
 
-* {
+// ---------------------------------------------------------------------------
+// Base
+// ---------------------------------------------------------------------------
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    background-color: #111;
-    color: white;
-    font: 14px/20px Monospace, sans-serif;
+}
+
+// Static background: a few soft colour pools, no JS and no per-frame cost.
+html {
+    background-color: var(--base);
+    background-image:
+        radial-gradient(60vmax 50vmax at 10% 0%, rgba(0, 160, 165, 0.22), transparent 60%),
+        radial-gradient(55vmax 45vmax at 95% 15%, rgba(110, 60, 200, 0.22), transparent 60%),
+        radial-gradient(50vmax 40vmax at 60% 100%, rgba(180, 40, 120, 0.14), transparent 60%);
+    background-attachment: fixed;
+}
+
+html,
+body {
+    color: var(--text);
+    font: 14px/20px var(--mono);
+    -webkit-font-smoothing: antialiased;
+}
+
+body {
+    min-height: 100dvh;
+}
+
+button,
+input,
+textarea,
+select {
+    font: inherit;
+    color: inherit;
 }
 
 a {
     color: inherit;
 }
 
-.header {
-    height: 32px;
-    box-shadow: 10px;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    padding: 16px;
-    position: fixed;
+::selection {
+    background: var(--accent-glow);
+}
 
-    div {
-        display: flex;
-        gap: 10px;
-        align-items: center;
+:focus-visible {
+    outline: 2px solid var(--accent-bright);
+    outline-offset: 2px;
+}
 
-        .button {
-            padding: 8px;
-            border-radius: 16px;
-            text-decoration: none;
-            cursor: pointer;
-        }
+// ---------------------------------------------------------------------------
+// Glass utilities
+// ---------------------------------------------------------------------------
+.glass {
+    background: var(--glass-tint);
+    -webkit-backdrop-filter: var(--glass-filter);
+    backdrop-filter: var(--glass-filter);
+    box-shadow: var(--glass-shadow);
+}
 
-        .button-activated {
-            @include hovered;
-        }
+// Gradient "liquid" rim: bright top-left edge fading out, drawn as a 1px ring.
+.rim {
+    position: relative;
 
-        .button:hover {
-            @include hovered;
-        }
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        padding: 1px;
+        border-radius: inherit;
+        background: linear-gradient(135deg,
+                rgba(255, 255, 255, 0.45),
+                rgba(255, 255, 255, 0.06) 35%,
+                rgba(255, 255, 255, 0.02) 65%,
+                rgba(255, 255, 255, 0.2));
+        -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
     }
 }
 
-.small-header {
-    height: 32px;
-    width: 32px;
+.pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--glass-border);
+    background: var(--card-tint);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    text-decoration: none;
+    transition: background 0.2s, border-color 0.2s, box-shadow 0.2s, transform 0.2s;
 
-    .button {
-        padding: 8px;
-        border-radius: 16px;
-    }
-
-    .button:hover {
-        @include hovered;
+    &:hover {
+        background: var(--card-tint-hover);
+        border-color: var(--accent);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 0 18px var(--accent-glow);
     }
 }
 
+// ---------------------------------------------------------------------------
+// Page layout
+// ---------------------------------------------------------------------------
 .content {
-    overflow: auto;
-    padding: 20px;
-    padding-top: 64px;
-
+    max-width: $image-container-width;
+    margin: 0 auto;
+    padding: 88px 20px 48px;
 
     .title {
-        height: auto;
         display: flex;
         flex-direction: column;
-        padding: 28px;
         align-items: center;
-        align-self: center;
+        gap: 8px;
+        padding: 20px 16px 28px;
+        text-align: center;
 
-        h2 {
-            font-size: 20px;
-            padding: 20px;
+        h1 {
+            font-size: 22px;
+            line-height: 30px;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            padding-bottom: 8px;
+        }
+
+        p {
+            color: var(--text-dim);
+        }
+
+        a {
+            color: var(--accent-bright);
         }
     }
 }
-
 
 .blocks {
     display: flex;
-    height: auto;
     flex-wrap: wrap;
     justify-content: center;
     margin: auto;
-    gap: 20px; // Gap between blocks
+    gap: 20px;
     max-width: $image-container-width;
+
     p {
         text-align: justify;
     }
 }
 
-
 .tile {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 16px;
-    border-radius: 16px;
-    border-style: solid;
-    border-color: rgb(255, 255, 255);
+    gap: 12px;
+    padding: 14px;
     width: 300px;
-    height: 420px;
+    min-height: 420px;
+    border-radius: var(--radius-card);
+    border: 1px solid var(--glass-border);
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 6px 20px rgba(0, 0, 0, 0.25);
+    transition: transform 0.25s ease, border-color 0.25s, box-shadow 0.25s, background 0.25s;
 
-
-    h5 {
+    h2 {
+        font-size: 15px;
+        line-height: 20px;
+        font-weight: 700;
         margin-bottom: 8px;
     }
 
+    p {
+        color: var(--text-dim);
+        text-align: left;
+    }
+
+    img {
+        flex-shrink: 0;
+        width: 100%;
+        height: 260px;
+        object-fit: cover;
+        object-position: top;
+    }
 
     &:hover {
-        @include hovered;
+        cursor: pointer;
+        transform: translateY(-3px);
+        border-color: var(--accent);
+        background: linear-gradient(160deg, rgba(255, 255, 255, 0.1), rgba(0, 170, 170, 0.05));
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 0 0 1px var(--accent-glow), 0 14px 36px rgba(0, 170, 170, 0.18);
     }
 }
 
 img {
     height: 300px;
+    max-width: 100%;
     border-radius: 8px;
-    border-style: solid;
-    border-color: #555;
+    border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .btn {
-    &:hover {
-        @include hovered;
-    }
+    cursor: pointer;
 }
 
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        transition: none !important;
+        animation: none !important;
+    }
 
-
+    .tile:hover {
+        transform: none;
+    }
+}

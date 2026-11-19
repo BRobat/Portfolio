@@ -17,14 +17,14 @@ iframe {
   top: 12px;
   left: 12px;
   z-index: 10;
-  padding: 6px 12px;
-  border-radius: 16px;
-  background-color: rgba(17, 17, 17, 0.7);
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
   text-decoration: none;
-  opacity: 0.8;
+  opacity: .85;
+  transition: opacity .2s, box-shadow .2s;
 
   &:hover {
     opacity: 1;
-    box-shadow: 5px 5px #0aa;
+    box-shadow: var(--glass-shadow), 0 0 18px var(--accent-glow);
   }
 }
