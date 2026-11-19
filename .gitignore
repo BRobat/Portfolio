@@ -46,3 +46,6 @@ firebase.json
 .firebaserc
 .firebase
 apphosting.yaml
+# Generated content
+/src/generated
+/src/app/content/generated
