@@ -1,0 +1,20 @@
+<article class="content">
+  <header class="title">
+    <h2>{{ post().title }}</h2>
+    <time [attr.datetime]="post().date">{{ post().date }}</time>
+  </header>
+
+  <app-markdown-content [html]="entry().html" />
+
+  <footer class="meta">
+    @if (projects().length) {
+      <p>
+        Related:
+        @for (project of projects(); track project.slug; let last = $last) {
+          <a [routerLink]="['/projects', project.slug]">{{ project.title }}</a>@if (!last) {, }
+        }
+      </p>
+    }
+    <p><a routerLink="/news">← all news</a></p>
+  </footer>
+</article>

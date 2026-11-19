@@ -1,0 +1,52 @@
+.news, .pager, .empty {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.news {
+  list-style: none;
+
+  li {
+    margin-bottom: 20px;
+  }
+
+  a {
+    display: flex;
+    gap: 16px;
+    text-decoration: none;
+
+    &:hover .headline {
+      text-decoration: underline;
+      color: #0aa;
+    }
+  }
+
+  time {
+    color: #888;
+    flex-shrink: 0;
+  }
+
+  .headline {
+    font-weight: bold;
+  }
+
+  p {
+    color: #bbb;
+    margin-top: 4px;
+  }
+}
+
+.empty {
+  text-align: center;
+}
+
+.pager {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 32px;
+
+  a {
+    color: #0aa;
+  }
+}

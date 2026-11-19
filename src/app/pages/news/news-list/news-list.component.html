@@ -1,0 +1,39 @@
+<div class="content">
+  <div class="title">
+    <h2>News</h2>
+  </div>
+
+  @if (items().length) {
+    <ol class="news">
+      @for (item of items(); track item.slug) {
+        <li>
+          <a [routerLink]="['/news', item.slug]">
+            <time [attr.datetime]="item.date">{{ item.date }}</time>
+            <span class="headline">{{ item.title }}</span>
+          </a>
+          @if (item.summary) {
+            <p>{{ item.summary }}</p>
+          }
+        </li>
+      }
+    </ol>
+  } @else {
+    <p class="empty">There are posts in the making. Just need some redacting. &gt;.&lt;</p>
+  }
+
+  @if (pageCount > 1) {
+    <nav class="pager" aria-label="News pages">
+      @if (current() > 1) {
+        <a [routerLink]="pageLink(current() - 1)" rel="prev">← newer</a>
+      } @else {
+        <span></span>
+      }
+      <span>{{ current() }} / {{ pageCount }}</span>
+      @if (current() < pageCount) {
+        <a [routerLink]="pageLink(current() + 1)" rel="next">older →</a>
+      } @else {
+        <span></span>
+      }
+    </nav>
+  }
+</div>

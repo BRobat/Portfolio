@@ -4,17 +4,21 @@
         <div>
             Bart Robat.
         </div>
-        <div class="button" [routerLink]="'projects'" routerLinkActive="button-activated">
+        <a class="button" routerLink="/projects" routerLinkActive="button-activated">
             Projects
-        </div>
+        </a>
 
-        <div class="button" [routerLink]="'about'" routerLinkActive="button-activated">
+        <a class="button" routerLink="/news" routerLinkActive="button-activated">
+            News
+        </a>
+
+        <a class="button" routerLink="/about" routerLinkActive="button-activated">
             About
-        </div>
+        </a>
 
-        <div class="button" [routerLink]="'blog'" routerLinkActive="button-activated">
-            Blog
-        </div>
+        <a class="button" routerLink="/contact" routerLinkActive="button-activated">
+            Contact
+        </a>
     </div>
     <div>
         <div class="button" (click)="toggleNavbar()">

@@ -1,0 +1,26 @@
+<div class="content">
+  <div class="title">
+    <h2>{{ project().title }}</h2>
+    @if (project().iframe) {
+      <a class="launch btn" [routerLink]="['/projects', project().slug, 'play']">▶ Launch</a>
+    }
+  </div>
+
+  <app-markdown-content [html]="entry().html" />
+
+  @if (news().length) {
+    <section class="related">
+      <h3>Related news</h3>
+      <ul>
+        @for (item of news(); track item.slug) {
+          <li>
+            <time [attr.datetime]="item.date">{{ item.date }}</time>
+            <a [routerLink]="['/news', item.slug]">{{ item.title }}</a>
+          </li>
+        }
+      </ul>
+    </section>
+  }
+
+  <p class="back"><a routerLink="/projects">← all projects</a></p>
+</div>
