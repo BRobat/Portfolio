@@ -8,8 +8,8 @@ describe('GalaxySimComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ GalaxySimComponent ]
-    })
+    imports: [GalaxySimComponent]
+})
     .compileComponents();
 
     fixture = TestBed.createComponent(GalaxySimComponent);

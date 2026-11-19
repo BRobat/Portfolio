@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 
 import { FrontPageComponent } from './front-page.component';
 
@@ -8,8 +9,9 @@ describe('FrontPageComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ FrontPageComponent ]
-    })
+    imports: [FrontPageComponent],
+    providers: [provideRouter([])]
+})
     .compileComponents();
 
     fixture = TestBed.createComponent(FrontPageComponent);
