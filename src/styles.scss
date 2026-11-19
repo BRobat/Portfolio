@@ -15,12 +15,8 @@ $mobile-breakpoint: 768px; // Typically the point at which to switch from 3 colu
     font: 14px/20px Monospace, sans-serif;
 }
 
-iframe {
-    width: 100%;
-    height: calc(100vh - 64px);
-    padding-top: 64px;
-    border: none;
-    display: block;
+a {
+    color: inherit;
 }
 
 .header {
@@ -40,6 +36,8 @@ iframe {
         .button {
             padding: 8px;
             border-radius: 16px;
+            text-decoration: none;
+            cursor: pointer;
         }
 
         .button-activated {

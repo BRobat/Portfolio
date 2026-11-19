@@ -1,0 +1,39 @@
+.launch {
+  display: inline-block;
+  padding: 8px 16px;
+  border: 1px solid white;
+  border-radius: 16px;
+  text-decoration: none;
+}
+
+.related, .back {
+  max-width: 680px;
+  margin: 32px auto 0;
+  padding: 0 16px;
+}
+
+.related {
+  h3 {
+    margin-bottom: 12px;
+    font-weight: bold;
+  }
+
+  ul {
+    list-style: none;
+  }
+
+  li {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 8px;
+  }
+
+  time {
+    color: #888;
+    flex-shrink: 0;
+  }
+}
+
+a {
+  color: #0aa;
+}

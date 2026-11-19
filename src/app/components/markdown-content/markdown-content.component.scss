@@ -1,0 +1,64 @@
+.markdown {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 16px;
+
+  h1, h2, h3, h4, h5, h6 {
+    margin: 24px 0 12px;
+    font-weight: bold;
+  }
+
+  p, ul, ol, blockquote, pre, table {
+    margin-bottom: 16px;
+  }
+
+  ul, ol {
+    padding-left: 24px;
+  }
+
+  blockquote {
+    border-left: 2px solid #0aa;
+    padding-left: 12px;
+    color: #bbb;
+  }
+
+  code {
+    background-color: #222;
+    padding: 0 4px;
+  }
+
+  pre {
+    background-color: #222;
+    padding: 12px;
+    overflow-x: auto;
+
+    code {
+      padding: 0;
+    }
+  }
+
+  img {
+    display: block;
+    height: auto;
+    max-width: 100%;
+    margin: 16px auto;
+  }
+
+  iframe {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    padding: 0;
+    margin: 16px 0;
+  }
+
+  a {
+    color: #0aa;
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid #555;
+    margin: 24px 0;
+  }
+}

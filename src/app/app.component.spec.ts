@@ -1,35 +1,35 @@
+import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
+import { Router, provideRouter } from '@angular/router';
 import { AppComponent } from './app.component';
 
+@Component({ template: '' })
+class DummyComponent {}
+
 describe('AppComponent', () => {
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [AppComponent],
+      providers: [
+        provideRouter([
+          { path: 'page', component: DummyComponent },
+          { path: 'play', component: DummyComponent, data: { immersive: true } },
+        ]),
       ],
-      declarations: [
-        AppComponent
-      ],
-    }).compileComponents();
+    });
   });
 
-  it('should create the app', () => {
+  it('hides the navbar on immersive routes', async () => {
     const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
-  });
+    const router = TestBed.inject(Router);
+    const el = fixture.nativeElement as HTMLElement;
 
-  it(`should have as title 'Portfolio'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('Portfolio');
-  });
-
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
+    await router.navigateByUrl('/page');
     fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('Portfolio app is running!');
+    expect(el.querySelector('app-navbar')).not.toBeNull();
+
+    await router.navigateByUrl('/play');
+    fixture.detectChanges();
+    expect(el.querySelector('app-navbar')).toBeNull();
   });
 });

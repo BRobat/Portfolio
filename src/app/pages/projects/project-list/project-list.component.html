@@ -1,0 +1,27 @@
+<div class="content">
+  <div class="title">
+    <h2>Projects</h2>
+    <p>
+      Here are some things I've published. The rest of the stuff is on my instagram
+      <a href="https://www.instagram.com/bart_robat/" target="_blank" rel="noopener">here</a>.
+    </p>
+    <p>
+      Besides that, projects I've made for clients are available on the <a routerLink="/about">about page</a>.
+      (they're mostly internal applications)
+    </p>
+  </div>
+
+  <div class="blocks">
+    @for (project of projects; track project.slug) {
+      <a class="tile" [routerLink]="['/projects', project.slug]">
+        <div>
+          <h5>{{ project.title }}</h5>
+          <p>{{ project.summary }}</p>
+        </div>
+        @if (project.cover) {
+          <img [src]="project.cover" [alt]="project.title">
+        }
+      </a>
+    }
+  </div>
+</div>
