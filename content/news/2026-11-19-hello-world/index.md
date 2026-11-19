@@ -1,6 +1,6 @@
 ---
 # Remove `draft: true` (or set it to false) to publish. Drafts only show with `npm start`.
-draft: true
+draft: false
 # Related projects (folder names in content/projects). Delete the line if none.
 project: [sols]
 ---
