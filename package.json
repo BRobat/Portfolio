@@ -4,8 +4,7 @@
   "scripts": {
     "ng": "ng",
     "content": "node scripts/build-content.mjs",
-    "prestart": "node scripts/build-content.mjs --drafts",
-    "start": "ng serve",
+    "start": "node scripts/build-content.mjs --drafts --watch --serve",
     "prebuild": "node scripts/build-content.mjs",
     "build": "ng build",
     "postbuild": "node -e \"require('fs').copyFileSync('dist/portfolio/browser/404/index.html','dist/portfolio/browser/404.html')\"",
