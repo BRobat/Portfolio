@@ -14,6 +14,6 @@ describe('ProjectPlayerComponent', () => {
 
     const el = fixture.nativeElement as HTMLElement;
     expect(el.querySelector('iframe')?.getAttribute('src')).toBe('https://example.com/');
-    expect(el.querySelector('a.back')?.getAttribute('href')).toBe('/projects/demo');
+    expect(el.querySelector('a.back-button')?.getAttribute('href')).toBe('/projects/demo');
   });
 });

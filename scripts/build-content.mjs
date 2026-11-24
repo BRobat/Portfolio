@@ -5,7 +5,7 @@
  *  - src/generated/public/       media files, sitemap.xml, robots.txt (served from site root)
  *
  * Usage: node scripts/build-content.mjs [--drafts] [--watch] [--serve [-- ng serve args]]
- *   --drafts  include entries with `draft: true`
+ *   --drafts  include entries with `draft: true` and news dated in the future
  *   --watch   rebuild whenever something in /content changes
  *   --serve   start `ng serve` after the first build (stops together with this script)
  */
@@ -40,6 +40,26 @@ export function splitFrontmatter(source) {
 export function parseFolderName(name) {
   const match = /^(\d{4}-\d{2}-\d{2})-(.+)$/.exec(name);
   return match ? { date: match[1], slug: slugify(match[2]) } : { date: null, slug: slugify(name) };
+}
+
+/** True for a real calendar date in YYYY-MM-DD form (rejects 2026-02-30, 2026-13-01, ...). */
+export function isValidIsoDate(value) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value ?? '');
+  if (!match) return false;
+  const [y, m, d] = match.slice(1).map(Number);
+  const date = new Date(Date.UTC(y, m - 1, d));
+  return date.getUTCFullYear() === y && date.getUTCMonth() === m - 1 && date.getUTCDate() === d;
+}
+
+/** Today's date in the local timezone as YYYY-MM-DD. */
+export function localToday(now = new Date()) {
+  const pad = n => String(n).padStart(2, '0');
+  return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+}
+
+/** News dated in the future is scheduled: it stays hidden until a build on or after that day. */
+export function isScheduled(date, today = localToday()) {
+  return !!date && date > today;
 }
 
 export function slugify(value) {
@@ -242,7 +262,7 @@ function removeStale(dir) {
   }
 }
 
-function readEntry(dir, type, { drafts, warn }) {
+function readEntry(dir, type, { drafts, warn, today, scheduled }) {
   const files = walkFiles(dir);
   const mdFiles = files.filter(f => f.endsWith('.md'));
   if (mdFiles.length !== 1) {
@@ -252,6 +272,19 @@ function readEntry(dir, type, { drafts, warn }) {
   if (data.draft && !drafts) return null;
 
   const folder = parseFolderName(path.basename(dir));
+  const date = data.date ? toIsoDate(data.date) : folder.date;
+  if (date && !isValidIsoDate(date)) {
+    throw new Error(`${path.relative(ROOT, dir)}: "${date}" is not a valid date (use YYYY-MM-DD)`);
+  }
+  if (type === 'news' && !date) {
+    throw new Error(`${path.relative(ROOT, dir)}: news needs a YYYY-MM-DD- folder prefix or a date property`);
+  }
+  // Posts written in advance: hidden until their date (shown with --drafts so they can be previewed).
+  if (type === 'news' && isScheduled(date, today)) {
+    scheduled.push(`${path.basename(dir)} (${date})`);
+    if (!drafts) return null;
+  }
+
   const slug = data.slug ? slugify(data.slug) : folder.slug;
   const mediaBase = `/content/${type}/${slug}`;
   const outDir = path.join(PUBLIC_OUT, 'content', type, slug);
@@ -275,11 +308,6 @@ function readEntry(dir, type, { drafts, warn }) {
   }
   const resolveImage = href => images.get(decodeURI(href)) ?? images.get(href) ?? { src: href };
   const rendered = renderMarkdown(body, mediaBase, resolveImage);
-
-  const date = data.date ? toIsoDate(data.date) : folder.date;
-  if (type === 'news' && !date) {
-    throw new Error(`${path.relative(ROOT, dir)}: news needs a YYYY-MM-DD- folder prefix or a date property`);
-  }
 
   const cover = data.cover
     ? isRelativeUrl(String(data.cover)) ? `${mediaBase}/${data.cover}` : String(data.cover)
@@ -360,15 +388,16 @@ function buildSitemap(news, projects) {
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${body}\n</urlset>\n`;
 }
 
-export function build({ drafts = false } = {}) {
+export function build({ drafts = false, today = localToday() } = {}) {
   const warnings = [];
   const warn = msg => warnings.push(msg);
+  const scheduled = [];
 
   written = new Set();
   pendingWebp = [];
 
-  const newsEntries = collect('news', { drafts, warn });
-  const projectEntries = collect('projects', { drafts, warn });
+  const newsEntries = collect('news', { drafts, warn, today, scheduled });
+  const projectEntries = collect('projects', { drafts, warn, today, scheduled });
 
   const projectSlugs = new Set(projectEntries.map(e => e.meta.slug));
   for (const { meta } of newsEntries) {
@@ -400,17 +429,17 @@ export const PROJECT_LOADERS: Record<string, ContentLoader> = ${loaderMap('proje
 `,
   );
 
-  // Drafts are only visible locally; keep them out of the sitemap.
+  // Drafts and scheduled posts are only visible locally; keep them out of the sitemap.
   writeIfChanged(
     path.join(PUBLIC_OUT, 'sitemap.xml'),
-    buildSitemap(news.filter(n => !n.draft), projects.filter(p => !p.draft)),
+    buildSitemap(news.filter(n => !n.draft && !isScheduled(n.date, today)), projects.filter(p => !p.draft)),
   );
   writeIfChanged(path.join(PUBLIC_OUT, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${SITE_URL}/sitemap.xml\n`);
 
   removeStale(TS_OUT);
   removeStale(PUBLIC_OUT);
 
-  return { news, projects, warnings, images: pendingWebp };
+  return { news, projects, warnings, scheduled, images: pendingWebp };
 }
 
 /** Converts images to WebP; skips targets that are already newer than their source. */
@@ -431,8 +460,11 @@ export async function convertImages(images) {
 }
 
 async function runBuild(drafts) {
-  const { news, projects, warnings, images } = build({ drafts });
+  const { news, projects, warnings, scheduled, images } = build({ drafts });
   for (const w of warnings) console.warn(`⚠ ${w}`);
+  if (scheduled.length) {
+    console.log(`content: scheduled (${drafts ? 'shown because of --drafts' : 'hidden until their date'}): ${scheduled.join(', ')}`);
+  }
   const converted = await convertImages(images);
   console.log(
     `content: ${news.length} news, ${projects.length} projects${drafts ? ' (drafts included)' : ''}` +

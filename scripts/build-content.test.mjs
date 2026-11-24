@@ -12,6 +12,9 @@ import {
   imageSize,
   fittedSize,
   toWebpPath,
+  isValidIsoDate,
+  localToday,
+  isScheduled,
 } from './build-content.mjs';
 import fs from 'node:fs';
 
@@ -102,4 +105,21 @@ test('renderMarkdown: resolveImage swaps src and adds dimensions', () => {
   assert.ok(r.html.includes('src="/m/k.webp"'));
   assert.ok(r.html.includes('width="10" height="20"'));
   assert.equal(r.firstImage, '/m/k.jpg');
+});
+
+test('isValidIsoDate rejects impossible dates', () => {
+  assert.ok(isValidIsoDate('2026-11-20'));
+  assert.ok(isValidIsoDate('2028-02-29'));
+  assert.ok(!isValidIsoDate('2026-02-29'));
+  assert.ok(!isValidIsoDate('2026-13-01'));
+  assert.ok(!isValidIsoDate('2026-1-1'));
+  assert.ok(!isValidIsoDate(null));
+});
+
+test('isScheduled: only dates after today are hidden', () => {
+  assert.equal(localToday(new Date(2026, 10, 5, 23, 30)), '2026-11-05');
+  assert.ok(!isScheduled('2026-11-19', '2026-11-20'));
+  assert.ok(!isScheduled('2026-11-20', '2026-11-20'));
+  assert.ok(isScheduled('2026-11-21', '2026-11-20'));
+  assert.ok(!isScheduled(null, '2026-11-20'));
 });

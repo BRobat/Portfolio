@@ -3,9 +3,10 @@
     <a
       class="link"
       [routerLink]="link.path"
-      routerLinkActive="active"
-      ariaCurrentWhenActive="page"
-      [class.active]="link.path === '/projects' && atRoot()"
+      routerLinkActive
+      #rla="routerLinkActive"
+      [class.active]="rla.isActive || (link.path === '/projects' && atRoot())"
+      [attr.aria-current]="rla.isActive || (link.path === '/projects' && atRoot()) ? 'page' : null"
       >{{ link.label }}</a
     >
   }

@@ -4,7 +4,7 @@ iframe: https://mushroom-picking.web.app/
 
 # Mushroom Picking demo
 
-An early version of mushroom picking. It's somewhat playable.
+An early version of mushroom picking game. It's somewhat playable.
 
 ![A pig in the woods](cover.png)
 

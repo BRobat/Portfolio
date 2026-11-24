@@ -1,12 +1,16 @@
 ---
+pinned: true
+index: 2
 iframe: https://brobat.github.io/Star-catalogue/
 ---
 
-# Gaia Star Atlas
+# Star Atlas
 
 A 3D map of stars around the Sun, inspired by Gaia catalogue and Ev Nova star map.
 
 ![Gaia Star Atlas](cover.png)
+
+If I ever find myself making some space game, this is how the map would look like. 
 
 - Stars sized and lit by apparent magnitude, with the Sun at the centre.
 - Stellar drift over ±5 million years with motion trails, plus a Gliese 710 flyby preset.

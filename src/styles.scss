@@ -49,7 +49,6 @@ $image-container-width: 1200px;
     padding: 0;
 }
 
-// Static background: a few soft colour pools, no JS and no per-frame cost.
 html {
     background-color: var(--base);
     background-image:
@@ -57,6 +56,14 @@ html {
         radial-gradient(55vmax 45vmax at 95% 15%, rgba(110, 60, 200, 0.22), transparent 60%),
         radial-gradient(50vmax 40vmax at 60% 100%, rgba(180, 40, 120, 0.14), transparent 60%);
     background-attachment: fixed;
+}
+
+* {
+    scrollbar-width: none;
+}
+
+*::-webkit-scrollbar {
+    display: none;
 }
 
 html,
@@ -101,7 +108,6 @@ a {
     box-shadow: var(--glass-shadow);
 }
 
-// Gradient "liquid" rim: bright top-left edge fading out, drawn as a 1px ring.
 .rim {
     position: relative;
 
@@ -139,6 +145,29 @@ a {
         background: var(--card-tint-hover);
         border-color: var(--accent);
         box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 0 18px var(--accent-glow);
+    }
+}
+
+.back-button {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 10;
+    padding: 6px 14px;
+    border-radius: var(--radius-pill);
+    text-decoration: none;
+    opacity: 0.85;
+    transition: opacity 0.2s, box-shadow 0.2s;
+
+    &:hover {
+        opacity: 1;
+        box-shadow: var(--glass-shadow), 0 0 18px var(--accent-glow);
+    }
+}
+
+@media (max-width: 600px) {
+    app-navbar ~ main .back-button {
+        top: 56px;
     }
 }
 

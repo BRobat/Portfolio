@@ -10,7 +10,7 @@ import { SeoService } from '../../../core/seo.service';
   imports: [RouterLink],
   template: `
     <iframe [src]="src()" [title]="project().title" allow="fullscreen; gamepad; xr-spatial-tracking" allowfullscreen></iframe>
-    <a class="back glass rim" [routerLink]="['/projects', project().slug]" aria-label="Back to project">← back</a>
+    <a class="back-button glass rim" [routerLink]="['/projects', project().slug]" aria-label="Back to project">← back</a>
   `,
   styleUrl: './project-player.component.scss',
 })

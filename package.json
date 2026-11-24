@@ -11,7 +11,8 @@
     "prewatch": "node scripts/build-content.mjs --drafts",
     "watch": "ng build --watch --configuration development",
     "pretest": "node scripts/build-content.mjs",
-    "test": "node --test scripts/build-content.test.mjs && ng test"
+    "test": "node --test scripts/build-content.test.mjs && ng test",
+    "deploy": "npm run build && firebase deploy --only hosting"
   },
   "private": true,
   "dependencies": {
